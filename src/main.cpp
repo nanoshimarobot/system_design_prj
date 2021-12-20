@@ -6,10 +6,12 @@
 #include <vector>
 #include <tuple>
 #include "configuration.h"
+#include <ArduinoJson.h>
 
 using namespace std;
 
 configuration config;
+char *payload = "{\"city\":\"Tokushima,JP\"}";
 
 bool wifi_init(){
   WiFi.begin(config.wifi_ssid, config.wifi_pass);
@@ -32,13 +34,12 @@ void setup() {
     M5.Lcd.printf("Wifi connection timed out!\r\n");
     while(1);
   }
-}
-
-void loop() {
+  
   HTTPClient http;
   http.begin(config.script_address);
+  http.addHeader("Content-Type", "application/json");
   
-  switch(http.GET()){
+  switch(http.POST(payload)){
     case HTTP_CODE_OK:
       M5.Lcd.printf("get success\n");
       M5.Lcd.println(http.getString());
@@ -51,5 +52,26 @@ void loop() {
       M5.Lcd.println(http.getString());
       break;
   }
-  delay(500);
+  while(1);
+}
+
+void loop() {
+  /*HTTPClient http;
+  http.begin(config.script_address);
+  http.addHeader("Content-Type", "application/json");
+  
+  switch(http.POST(payload)){
+    case HTTP_CODE_OK:
+      M5.Lcd.printf("get success\n");
+      M5.Lcd.println(http.getString());
+      break;
+    
+    case HTTP_CODE_FOUND:
+      http.end();
+      http.begin(http.getLocation().c_str());
+      http.GET();
+      M5.Lcd.println(http.getString());
+      break;
+  }*/
+  delay(10000);
 }
