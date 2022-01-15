@@ -7,8 +7,18 @@
 #include <tuple>
 #include "configuration.h"
 #include <ArduinoJson.h>
+#include <AquesTalkTTS.h>
+#include <Avatar.h>
+#include <tasks/LipSync.h>
+#include <M5StackUpdater.h>
+#include <Accessory.h>
+
 
 using namespace std;
+using namespace m5avatar;
+
+Avatar avatar;
+const char* AQUESTALK_KEY = "XXXX-XXXX-XXXX-XXXX";
 
 configuration config;
 char *payload = "{\"city\":\"Tokushima,JP\"}";
@@ -28,6 +38,11 @@ void setup() {
   M5.begin(true, false, true, false);
   M5.Power.begin();
   Serial.begin(115200);
+  int iret = TTS.create(AQUESTALK_KEY);
+  M5.Lcd.setBrightness(30);
+  M5.Lcd.clear();
+  // avatar.init();
+  // avatar.addTask(lipSync, "libSync");
   // delay(100);
 
   if(!wifi_init()){
@@ -52,10 +67,17 @@ void setup() {
       M5.Lcd.println(http.getString());
       break;
   }
+
+
+
   while(1);
 }
 
 void loop() {
+  // M5.update();
+  // TTS.play("aiueo",70);
+  // avatar.setSpeechText("aiueo");
+
   /*HTTPClient http;
   http.begin(config.script_address);
   http.addHeader("Content-Type", "application/json");
@@ -74,4 +96,5 @@ void loop() {
       break;
   }*/
   delay(10000);
+  // avatar.setSpeechText("");
 }
